@@ -1,67 +1,119 @@
-import { Avatar, Label, Switch, SwitchOnChangeData, teamsLightTheme } from '@fluentui/react-components'
-import { FluentProvider } from '@fluentui/react-components'
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import {
+  Avatar,
+  Persona,
+  Switch,
+  SwitchOnChangeData,
+  makeStyles,
+  webLightTheme,
+} from '@fluentui/react-components';
+import { FluentProvider } from '@fluentui/react-components';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { IInputs } from '../generated/ManifestTypes';
+import useWebApiFetch, { UserData } from '../hooks/useWebApiFetch';
+import { text } from 'stream/consumers';
+import { log } from 'console';
 
 export interface MySwitchProps {
-    textFieldSLOT: string | null
-    currentUserFullName: string
-    currentUserImg: string
-    onSwitchChange: (input: string | null) => void
+  textFieldSLOT: string | null;
+  context: ComponentFramework.Context<IInputs> | null;
+  onSwitchChange: (input: string | null) => void;
 }
 
-const MySwitch = ({ textFieldSLOT, currentUserFullName, currentUserImg, onSwitchChange }: MySwitchProps) => {
+const useStyles = makeStyles({});
 
-    const [info, setInfo] = useState<string[] | null>(null)
+const MySwitch = ({
+  textFieldSLOT,
+  context,
+  onSwitchChange,
+}: MySwitchProps) => {
+  const { data, error, isLoading } = useWebApiFetch(context!);
 
-    useEffect(() => { 
+  const [loggedInUser, setLoggedInUser] = useState<UserData>({
+    fullName: '',
+    img: '',
+  });
 
-        console.log("thurs TEST")
-        
-        if (textFieldSLOT !== null) {
-            setInfo(textFieldSLOT.split(','));
-        }
-    }, [])
+  const [switchData, setSwitchData] = useState<UserData | null>(null);
 
-    const onChange = (ev: React.ChangeEvent<HTMLInputElement>, { checked }: SwitchOnChangeData): void => {
-
-        
-
-        let switchChecked: boolean = !!checked;
-        // onSwitchChange(checked ? 'on' : undefined)
-        if (switchChecked) {
-            const date = new Date();
-            let day = date.getDate();
-            let month = date.getMonth();
-            let year = date.getFullYear();
-            let hour = date.getHours();
-            let minute = date.getMinutes();
-
-            onSwitchChange(`${currentUserFullName}, ${currentUserImg}, ${day}/${month}/${year} @ ${hour}:${minute}`)
-        } else {
-            onSwitchChange(null)
-        }
+  useEffect(() => {
+    console.log('Textfieldslot: ', textFieldSLOT);
+    if (textFieldSLOT !== null) {
+      setSwitchData({
+        fullName: textFieldSLOT.split(',')[0],
+        img: textFieldSLOT.split(',')[1],
+        timestamp: textFieldSLOT.split(',')[2],
+      });
     }
+  }, []);
 
+  useEffect(() => {
+    setLoggedInUser(data);
+    console.log('data', data);
+  }, [data]);
 
+  const onChange = (
+    ev: React.ChangeEvent<HTMLInputElement>,
+    { checked }: SwitchOnChangeData
+  ): void => {
+    let switchChecked: boolean = !!checked;
+    // onSwitchChange(checked ? 'on' : undefined)
+    if (switchChecked) {
+      const date = new Date();
+      let day = date.getDate();
+      let month = date.getMonth();
+      let year = date.getFullYear();
+      let hour = date.getHours();
+      let minute = date.getMinutes();
 
-    useEffect(() => {
+      setSwitchData({
+        fullName: loggedInUser.fullName,
+        img: loggedInUser.img,
+        timestamp: `${day}/${month + 1}/${year} @ ${hour}:${minute}`,
+      });
 
-    }, [textFieldSLOT])
+      // onSwitchChange(
+      //   `${data.fullName}, ${data.img}, ${day}/${month}/${year} @ ${hour}:${minute}`
+      // );
 
-    return (
-        <FluentProvider theme={teamsLightTheme}>
-            <Switch label={textFieldSLOT} checked={textFieldSLOT !== null} onChange={onChange} />
-            {info !== null && 
-            <>
-            <Avatar name={info![0]} image={{ src: info![1] }} />
-            <Label>{info![2]}</Label>
-            </>
-            
-            }
-            
-        </FluentProvider>
-    )
-}
+      onSwitchChange(
+        `${loggedInUser.fullName},${loggedInUser.img},${day}/${
+          month + 1
+        }/${year} @ ${hour}:${minute}`
+      );
+    } else {
+      setSwitchData(null);
+      onSwitchChange(null);
+    }
+  };
 
-export default MySwitch
+  return (
+    <FluentProvider theme={webLightTheme}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'flex-start',
+          gap: '10px',
+        }}
+      >
+        <Switch checked={switchData !== null} onChange={onChange} />
+        {switchData && (
+          <>
+            <Persona
+              name={switchData.fullName}
+              secondaryText={switchData.timestamp}
+              avatar={{
+                image: {
+                  src: switchData.img,
+                },
+              }}
+            />
+          </>
+        )}
+      </div>
+    </FluentProvider>
+  );
+};
+
+export default MySwitch;
