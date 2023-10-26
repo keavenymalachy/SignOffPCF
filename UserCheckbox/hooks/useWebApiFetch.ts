@@ -26,10 +26,19 @@ const useWebApiFetch = (context: ComponentFramework.Context<IInputs>) => {
           '?$select=entityimage_url'
         );
         if (isMounted) {
+          let userName: string = context.userSettings.userName;
+          let userImg: string;
+
+          if (result.entityimage_url == null) {
+            userImg = '';
+          } else {
+            userImg = result.entityimage_url;
+          }
           setData({
-            fullName: context.userSettings.userName,
-            img: result.entityimage_url,
+            fullName: userName,
+            img: userImg,
           });
+
           setError(null);
         }
       } catch (error: any) {
