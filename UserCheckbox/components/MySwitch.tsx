@@ -1,8 +1,16 @@
 import {
   Avatar,
+  Checkbox,
+  InteractionTag,
+  InteractionTagPrimary,
+  InteractionTagSecondary,
+  Label,
+  Link,
   Persona,
   Switch,
   SwitchOnChangeData,
+  Theme,
+  Tooltip,
   makeStyles,
   webLightTheme,
 } from '@fluentui/react-components';
@@ -11,11 +19,20 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { IInputs } from '../generated/ManifestTypes';
 import useWebApiFetch, { UserData } from '../hooks/useWebApiFetch';
-import { text } from 'stream/consumers';
-import { log } from 'console';
+import { getTheme } from '../utils/theme';
 
 export interface MySwitchProps {
   textFieldSLOT: string | null;
+  dateFormat: string;
+  showTime: boolean;
+  switchOrCheckbox: string;
+  showTooltip: boolean;
+  theme:
+    | 'WebLightTheme'
+    | 'WebDarkTheme'
+    | 'TeamsLightTheme'
+    | 'TeamsDarkTheme'
+    | 'TeamsHighContrastTheme';
   context: ComponentFramework.Context<IInputs> | null;
   onSwitchChange: (input: string | null) => void;
 }
@@ -24,9 +41,16 @@ const useStyles = makeStyles({});
 
 const MySwitch = ({
   textFieldSLOT,
+  dateFormat,
+  showTime,
+  switchOrCheckbox,
+  showTooltip,
+  theme,
   context,
   onSwitchChange,
 }: MySwitchProps) => {
+  const currentTheme = getTheme(theme);
+
   const { data, error, isLoading } = useWebApiFetch(context!);
 
   const [loggedInUser, setLoggedInUser] = useState<UserData>({
@@ -52,19 +76,17 @@ const MySwitch = ({
     console.log('data', data);
   }, [data]);
 
-  const onChange = (
-    ev: React.ChangeEvent<HTMLInputElement>,
-    { checked }: SwitchOnChangeData
-  ): void => {
-    let switchChecked: boolean = !!checked;
+  const onChange = (): void => {
+    // let switchChecked: boolean = !!checked;
     // onSwitchChange(checked ? 'on' : undefined)
-    if (switchChecked) {
+    if (switchData === null) {
       const date = new Date();
       let day = date.getDate();
       let month = date.getMonth();
       let year = date.getFullYear();
       let hour = date.getHours();
-      let minute = date.getMinutes();
+      let minute = `${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()}`;
+      // date.getMinutes().padStart(2, "0");
 
       setSwitchData({
         fullName: loggedInUser.fullName,
@@ -87,8 +109,15 @@ const MySwitch = ({
     }
   };
 
+  const handleNameClick = (e: any) => {
+    context?.navigation.openForm({
+      entityName: 'systemuser',
+      entityId: context.userSettings.userId,
+    });
+  };
+
   return (
-    <FluentProvider theme={webLightTheme}>
+    <FluentProvider theme={currentTheme}>
       <div
         style={{
           display: 'flex',
@@ -97,18 +126,62 @@ const MySwitch = ({
           gap: '10px',
         }}
       >
-        <Switch checked={switchData !== null} onChange={onChange} />
+        {switchOrCheckbox === 'Switch' ? (
+          <Switch checked={switchData !== null} onChange={onChange} />
+        ) : (
+          <Checkbox checked={switchData !== null} onChange={onChange} />
+        )}
         {switchData && (
           <>
-            <Persona
+            {/* <Persona
               name={switchData.fullName}
+              primaryText={
+                <Tooltip
+                  content={switchData.fullName}
+                  relationship='description'
+                >
+                  <Link onClick={handleNameClick}>{switchData.fullName}</Link>
+                </Tooltip>
+              }
               secondaryText={switchData.timestamp}
               avatar={{
                 image: {
                   src: switchData.img,
                 },
               }}
-            />
+            /> */}
+            {/* <Avatar name={switchData.fullName} color='colorful' size={28} />
+            <div
+              style={{
+                marginLeft: '0.5em',
+                display: 'flex',
+                flexDirection: 'column',
+              }}
+            >
+              <Tooltip content={switchData.fullName} relationship='description'>
+                <Link style={{ fontWeight: 'bold' }} onClick={handleNameClick}>
+                  {switchData.fullName}
+                </Link>
+              </Tooltip>
+              <Label size='small' style={{ color: 'gray' }}>
+                {switchData.timestamp}
+              </Label>
+            </div> */}
+            <InteractionTag shape='circular'>
+              <Tooltip content={switchData.fullName} relationship='description'>
+                <InteractionTagPrimary
+                  onClick={handleNameClick}
+                  media={<Avatar name={switchData.fullName} color='colorful' />}
+                  secondaryText={
+                    showTime
+                      ? switchData.timestamp
+                      : switchData.timestamp?.split('@')[0]
+                  }
+                >
+                  {switchData.fullName}
+                </InteractionTagPrimary>
+              </Tooltip>
+            </InteractionTag>
           </>
         )}
       </div>

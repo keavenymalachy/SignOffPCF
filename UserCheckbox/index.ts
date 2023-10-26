@@ -9,11 +9,15 @@ export class UserCheckbox
   private _notifyOutputChanged: () => void;
   private _root: Root;
   private _inputText: string | null;
-  private _userImg: string;
 
   private _props: MySwitchProps = {
     textFieldSLOT: null,
+    dateFormat: 'UK',
+    showTime: true,
+    switchOrCheckbox: '',
+    showTooltip: true,
     context: null,
+    theme: 'WebLightTheme',
     onSwitchChange: this.notifyChange.bind(this),
   };
 
@@ -43,36 +47,21 @@ export class UserCheckbox
    * @param context The entire property bag available to control via Context Object; It contains values as set up by the customizer mapped to names defined in the manifest, as well as utility functions
    */
   public updateView(context: ComponentFramework.Context<IInputs>): void {
-    // Add code to update control view
+    context.parameters.textField.raw === null
+      ? (this._props.textFieldSLOT = null)
+      : (this._props.textFieldSLOT = context.parameters.textField.raw!);
 
-    if (context.parameters.textField.raw === null) {
-      this._props.textFieldSLOT = null;
-    } else {
-      this._props.textFieldSLOT = context.parameters.textField.raw!;
-    }
+    // Static Properties
+    this._props.dateFormat = context.parameters.dateformat?.raw ?? 'UK';
+    this._props.showTime = context.parameters.showtime?.raw === 'True' ?? true;
+    this._props.switchOrCheckbox =
+      context.parameters.switchorcheckbox?.raw ?? 'Switch';
+    this._props.showTooltip =
+      context.parameters.showtooltip?.raw === 'True' ?? true;
+    this._props.theme = context.parameters.Theme?.raw ?? 'WebLightTheme';
 
     this._root.render(createElement(MyCheckbox, this._props));
   }
-
-  // public getUserImg(userId: string) {
-  //   let queryString = `?$filter=systemuserid%20eq%20${userId}`;
-
-  //   this._props
-  //     .context!.webAPI.retrieveRecord(
-  //       'systemuser',
-  //       userId,
-  //       '?$select=entityimage_url'
-  //     )
-  //     .then(
-  //       (result) => {
-  //         console.log('User image: ', result.entityimage_url);
-  //         this._userImg = result.entityimage_url;
-  //       },
-  //       (error) => {
-  //         console.log('Error: ', error);
-  //       }
-  //     );
-  // }
 
   /**
    * It is called by the framework prior to a control receiving new data.
