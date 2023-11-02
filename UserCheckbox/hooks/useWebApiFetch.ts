@@ -4,11 +4,16 @@ import { IInputs } from '../generated/ManifestTypes';
 export interface UserData {
   fullName: string;
   img: string;
+  userId: string;
   timestamp?: string;
 }
 
 const useWebApiFetch = (context: ComponentFramework.Context<IInputs>) => {
-  const [data, setData] = useState<UserData>({ fullName: '', img: '' });
+  const [data, setData] = useState<UserData>({
+    fullName: '',
+    img: '',
+    userId: '',
+  });
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,6 +42,7 @@ const useWebApiFetch = (context: ComponentFramework.Context<IInputs>) => {
           setData({
             fullName: userName,
             img: userImg,
+            userId: context.userSettings.userId,
           });
 
           setError(null);
