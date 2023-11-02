@@ -49,6 +49,8 @@ const MySwitch = ({
   context,
   onSwitchChange,
 }: MySwitchProps) => {
+  console.log('Showtime: ', showTime);
+
   const currentTheme = getTheme(theme);
 
   const { data, error, isLoading } = useWebApiFetch(context!);
@@ -56,6 +58,7 @@ const MySwitch = ({
   const [loggedInUser, setLoggedInUser] = useState<UserData>({
     fullName: '',
     img: '',
+    userId: '',
   });
 
   const [switchData, setSwitchData] = useState<UserData | null>(null);
@@ -66,7 +69,8 @@ const MySwitch = ({
       setSwitchData({
         fullName: textFieldSLOT.split(',')[0],
         img: textFieldSLOT.split(',')[1],
-        timestamp: textFieldSLOT.split(',')[2],
+        userId: textFieldSLOT.split(',')[2],
+        timestamp: textFieldSLOT.split(',')[3],
       });
     }
   }, []);
@@ -91,6 +95,7 @@ const MySwitch = ({
       setSwitchData({
         fullName: loggedInUser.fullName,
         img: loggedInUser.img,
+        userId: loggedInUser.userId,
         timestamp: `${day}/${month + 1}/${year} @ ${hour}:${minute}`,
       });
 
@@ -99,9 +104,9 @@ const MySwitch = ({
       // );
 
       onSwitchChange(
-        `${loggedInUser.fullName},${loggedInUser.img},${day}/${
-          month + 1
-        }/${year} @ ${hour}:${minute}`
+        `${loggedInUser.fullName},${loggedInUser.img},${
+          loggedInUser.userId
+        },${day}/${month + 1}/${year} @ ${hour}:${minute}`
       );
     } else {
       setSwitchData(null);
@@ -112,7 +117,7 @@ const MySwitch = ({
   const handleNameClick = (e: any) => {
     context?.navigation.openForm({
       entityName: 'systemuser',
-      entityId: context.userSettings.userId,
+      entityId: loggedInUser.userId,
     });
   };
 
@@ -133,54 +138,18 @@ const MySwitch = ({
         )}
         {switchData && (
           <>
-            {/* <Persona
-              name={switchData.fullName}
-              primaryText={
-                <Tooltip
-                  content={switchData.fullName}
-                  relationship='description'
-                >
-                  <Link onClick={handleNameClick}>{switchData.fullName}</Link>
-                </Tooltip>
-              }
-              secondaryText={switchData.timestamp}
-              avatar={{
-                image: {
-                  src: switchData.img,
-                },
-              }}
-            /> */}
-            {/* <Avatar name={switchData.fullName} color='colorful' size={28} />
-            <div
-              style={{
-                marginLeft: '0.5em',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-            >
-              <Tooltip content={switchData.fullName} relationship='description'>
-                <Link style={{ fontWeight: 'bold' }} onClick={handleNameClick}>
-                  {switchData.fullName}
-                </Link>
-              </Tooltip>
-              <Label size='small' style={{ color: 'gray' }}>
-                {switchData.timestamp}
-              </Label>
-            </div> */}
             <InteractionTag shape='circular'>
-              <Tooltip content={switchData.fullName} relationship='description'>
-                <InteractionTagPrimary
-                  onClick={handleNameClick}
-                  media={<Avatar name={switchData.fullName} color='colorful' />}
-                  secondaryText={
-                    showTime
-                      ? switchData.timestamp
-                      : switchData.timestamp?.split('@')[0]
-                  }
-                >
-                  {switchData.fullName}
-                </InteractionTagPrimary>
-              </Tooltip>
+              <InteractionTagPrimary
+                onClick={handleNameClick}
+                media={<Avatar name={switchData.fullName} color='colorful' />}
+                secondaryText={
+                  showTime
+                    ? switchData.timestamp
+                    : switchData.timestamp?.split('@')[0]
+                }
+              >
+                {switchData.fullName}
+              </InteractionTagPrimary>
             </InteractionTag>
           </>
         )}

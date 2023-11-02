@@ -54,6 +54,7 @@ export class UserCheckbox
     // Static Properties
     this._props.dateFormat = context.parameters.dateformat?.raw ?? 'UK';
     this._props.showTime = context.parameters.showtime?.raw === 'True' ?? true;
+
     this._props.switchOrCheckbox =
       context.parameters.switchorcheckbox?.raw ?? 'Switch';
     this._props.showTooltip =
