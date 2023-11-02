@@ -26,7 +26,6 @@ export interface MySwitchProps {
   dateFormat: string;
   showTime: boolean;
   switchOrCheckbox: string;
-  showTooltip: boolean;
   theme:
     | 'WebLightTheme'
     | 'WebDarkTheme'
@@ -44,7 +43,6 @@ const MySwitch = ({
   dateFormat,
   showTime,
   switchOrCheckbox,
-  showTooltip,
   theme,
   context,
   onSwitchChange,
@@ -98,10 +96,6 @@ const MySwitch = ({
         userId: loggedInUser.userId,
         timestamp: `${day}/${month + 1}/${year} @ ${hour}:${minute}`,
       });
-
-      // onSwitchChange(
-      //   `${data.fullName}, ${data.img}, ${day}/${month}/${year} @ ${hour}:${minute}`
-      // );
 
       onSwitchChange(
         `${loggedInUser.fullName},${loggedInUser.img},${

@@ -22,11 +22,6 @@
       <value name="Checkbox" display-name-key="Checkbox" description-key="Checkbox Component">Checkbox</value>
     </property>
 
-    <property name="showtooltip" display-name-key="Show Tooltip" description-key="Show the tooltip on hover. Default = True" of-type="Enum" usage="input" required="true">
-      <value name="True" display-name-key="True" description-key="True" default="true">True</value>
-      <value name="False" display-name-key="False" description-key="False">False</value>
-    </property>
-
     <property name="Theme" display-name-key="Theme" description-key="Theme. Default: Web Light" of-type="Enum" usage="input" required="true">
       <value name="WebLightTheme" display-name-key="WebLightTheme" description-key="Web Light Theme" default="true">WebLightTheme</value>
       <value name="WebDarkTheme" display-name-key="WebDarkTheme" description-key="Web Dark Theme">WebDarkTheme</value>

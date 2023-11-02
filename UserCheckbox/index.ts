@@ -15,7 +15,6 @@ export class UserCheckbox
     dateFormat: 'UK',
     showTime: true,
     switchOrCheckbox: '',
-    showTooltip: true,
     context: null,
     theme: 'WebLightTheme',
     onSwitchChange: this.notifyChange.bind(this),
@@ -57,8 +56,6 @@ export class UserCheckbox
 
     this._props.switchOrCheckbox =
       context.parameters.switchorcheckbox?.raw ?? 'Switch';
-    this._props.showTooltip =
-      context.parameters.showtooltip?.raw === 'True' ?? true;
     this._props.theme = context.parameters.Theme?.raw ?? 'WebLightTheme';
 
     this._root.render(createElement(MyCheckbox, this._props));
