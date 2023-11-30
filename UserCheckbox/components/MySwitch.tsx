@@ -64,12 +64,8 @@ const MySwitch = ({
   useEffect(() => {
     console.log('Textfieldslot: ', textFieldSLOT);
     if (textFieldSLOT !== null) {
-      setSwitchData({
-        fullName: textFieldSLOT.split(',')[0],
-        img: textFieldSLOT.split(',')[1],
-        userId: textFieldSLOT.split(',')[2],
-        timestamp: textFieldSLOT.split(',')[3],
-      });
+      const user: UserData = JSON.parse(textFieldSLOT);
+      setSwitchData(user);
     }
   }, []);
 
@@ -81,6 +77,7 @@ const MySwitch = ({
   const onChange = (): void => {
     // let switchChecked: boolean = !!checked;
     // onSwitchChange(checked ? 'on' : undefined)
+
     if (switchData === null) {
       const date = new Date();
       let day = date.getDate();
@@ -90,18 +87,15 @@ const MySwitch = ({
       let minute = `${date.getMinutes() < 10 ? '0' : ''}${date.getMinutes()}`;
       // date.getMinutes().padStart(2, "0");
 
-      setSwitchData({
+      let userData: UserData = {
         fullName: loggedInUser.fullName,
         img: loggedInUser.img,
         userId: loggedInUser.userId,
         timestamp: `${day}/${month + 1}/${year} @ ${hour}:${minute}`,
-      });
+      };
 
-      onSwitchChange(
-        `${loggedInUser.fullName},${loggedInUser.img},${
-          loggedInUser.userId
-        },${day}/${month + 1}/${year} @ ${hour}:${minute}`
-      );
+      setSwitchData(userData);
+      onSwitchChange(JSON.stringify(userData));
     } else {
       setSwitchData(null);
       onSwitchChange(null);
