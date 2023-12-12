@@ -6,13 +6,13 @@ import {
   teamsLightTheme,
   teamsDarkTheme,
 } from '@fluentui/react-components';
-import { MySwitchProps } from '../components/MySwitch';
+import SwitchArgs from '../services/SwitchContext';
 
 // const themes = (name: MySwitchProps['theme']): Theme => {
 //     'WebThemeLight': webLightTheme
 // };
 
-const themes: Record<MySwitchProps['theme'], Theme> = {
+const themes: Record<SwitchArgs['theme'], Theme> = {
   WebLightTheme: webLightTheme,
   WebDarkTheme: webDarkTheme,
   TeamsLightTheme: teamsLightTheme,
@@ -20,6 +20,6 @@ const themes: Record<MySwitchProps['theme'], Theme> = {
   TeamsHighContrastTheme: teamsHighContrastTheme,
 };
 
-export const getTheme = (name: MySwitchProps['theme']): Theme => {
+export const getTheme = (name: SwitchArgs['theme']): Theme => {
   return themes[name];
 };

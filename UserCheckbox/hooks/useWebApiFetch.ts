@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { IInputs } from '../generated/ManifestTypes';
 
-export interface UserData {
+interface UserData {
   fullName: string;
   img: string;
   userId: string;
@@ -69,4 +69,4 @@ const useWebApiFetch = (context: ComponentFramework.Context<IInputs>) => {
   return { data, error, isLoading };
 };
 
-export default useWebApiFetch;
+// export default useWebApiFetch;

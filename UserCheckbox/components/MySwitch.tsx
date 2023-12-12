@@ -17,41 +17,46 @@ import {
 import { FluentProvider } from '@fluentui/react-components';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { IInputs } from '../generated/ManifestTypes';
-import useWebApiFetch, { UserData } from '../hooks/useWebApiFetch';
 import { getTheme } from '../utils/theme';
+import { useSwitchContext } from '../services/SwitchContextProvider';
+import { useUserData } from '../hooks/useUserData';
+import { UserData } from '../types/UserData';
 
-export interface MySwitchProps {
-  textFieldSLOT: string | null;
-  dateFormat: string;
-  showTime: boolean;
-  switchOrCheckbox: string;
-  theme:
-    | 'WebLightTheme'
-    | 'WebDarkTheme'
-    | 'TeamsLightTheme'
-    | 'TeamsDarkTheme'
-    | 'TeamsHighContrastTheme';
-  context: ComponentFramework.Context<IInputs> | null;
-  onSwitchChange: (input: string | null) => void;
-}
+// export interface MySwitchProps {
+//   textFieldSLOT: string | null;
+//   dateFormat: string;
+//   showTime: boolean;
+//   switchOrCheckbox: string;
+//   theme:
+//     | 'WebLightTheme'
+//     | 'WebDarkTheme'
+//     | 'TeamsLightTheme'
+//     | 'TeamsDarkTheme'
+//     | 'TeamsHighContrastTheme';
+//   context: ComponentFramework.Context<IInputs> | null;
+//   onSwitchChange: (input: string | null) => void;
+// }
 
 const useStyles = makeStyles({});
 
-const MySwitch = ({
-  textFieldSLOT,
-  dateFormat,
-  showTime,
-  switchOrCheckbox,
-  theme,
-  context,
-  onSwitchChange,
-}: MySwitchProps) => {
+const MySwitch = (): React.JSX.Element => {
+  const {
+    textFieldSLOT,
+    dateFormat,
+    showTime,
+    switchOrCheckbox,
+    theme,
+    context,
+    onSwitchChange,
+  } = useSwitchContext();
+
   console.log('Showtime: ', showTime);
 
   const currentTheme = getTheme(theme);
 
-  const { data, error, isLoading } = useWebApiFetch(context!);
+  // const { data, error, isLoading } = useWebApiFetch(context!);
+
+  const { user, isLoading, error } = useUserData();
 
   const [loggedInUser, setLoggedInUser] = useState<UserData>({
     fullName: '',
@@ -70,9 +75,9 @@ const MySwitch = ({
   }, []);
 
   useEffect(() => {
-    setLoggedInUser(data);
-    console.log('data', data);
-  }, [data]);
+    setLoggedInUser(user as UserData);
+    console.log('data', user);
+  }, [user]);
 
   const onChange = (): void => {
     // let switchChecked: boolean = !!checked;
