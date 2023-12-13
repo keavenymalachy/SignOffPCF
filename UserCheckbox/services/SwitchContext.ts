@@ -15,6 +15,7 @@ type SwitchArgs = {
     | 'TeamsHighContrastTheme';
   context: ComponentFramework.Context<IInputs>;
   onSwitchChange: (input: string | null) => void;
+  disabled: boolean;
 };
 
 export default SwitchArgs;

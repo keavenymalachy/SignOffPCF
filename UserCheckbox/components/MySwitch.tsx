@@ -48,6 +48,7 @@ const MySwitch = (): React.JSX.Element => {
     theme,
     context,
     onSwitchChange,
+    disabled,
   } = useSwitchContext();
 
   console.log('Showtime: ', showTime);
@@ -76,7 +77,7 @@ const MySwitch = (): React.JSX.Element => {
 
   useEffect(() => {
     setLoggedInUser(user as UserData);
-    console.log('data', user);
+    console.log('data: ', user);
   }, [user]);
 
   const onChange = (): void => {
@@ -114,6 +115,24 @@ const MySwitch = (): React.JSX.Element => {
     });
   };
 
+  const renderSecondaryText = (): string => {
+    let formattedTimestamp: string = '';
+
+    if (switchData && switchData.timestamp) {
+      if (dateFormat === 'UK') {
+        formattedTimestamp = `${switchData.timestamp.split('/')[0]}/${
+          switchData?.timestamp.split('/')[1]
+        }/${switchData?.timestamp.split('/')[2]}`;
+      } else {
+        formattedTimestamp = `${switchData.timestamp.split('/')[1]}/${
+          switchData?.timestamp.split('/')[0]
+        }/${switchData?.timestamp.split('/')[2]}`;
+      }
+    }
+
+    return showTime ? formattedTimestamp : formattedTimestamp.split('@')[0];
+  };
+
   return (
     <FluentProvider theme={currentTheme}>
       <div
@@ -125,9 +144,17 @@ const MySwitch = (): React.JSX.Element => {
         }}
       >
         {switchOrCheckbox === 'Switch' ? (
-          <Switch checked={switchData !== null} onChange={onChange} />
+          <Switch
+            checked={switchData !== null}
+            onChange={onChange}
+            disabled={disabled}
+          />
         ) : (
-          <Checkbox checked={switchData !== null} onChange={onChange} />
+          <Checkbox
+            checked={switchData !== null}
+            onChange={onChange}
+            disabled={disabled}
+          />
         )}
         {switchData && (
           <>
@@ -135,11 +162,7 @@ const MySwitch = (): React.JSX.Element => {
               <InteractionTagPrimary
                 onClick={handleNameClick}
                 media={<Avatar name={switchData.fullName} color='colorful' />}
-                secondaryText={
-                  showTime
-                    ? switchData.timestamp
-                    : switchData.timestamp?.split('@')[0]
-                }
+                secondaryText={renderSecondaryText()}
               >
                 {switchData.fullName}
               </InteractionTagPrimary>

@@ -19,9 +19,8 @@ export class UserCheckbox
     switchOrCheckbox: '',
     theme: 'WebLightTheme',
     context: {} as ComponentFramework.Context<IInputs>,
-    onSwitchChange: function (input: string | null): void {
-      throw new Error('Function not implemented.');
-    },
+    onSwitchChange: this.notifyChange.bind(this),
+    disabled: false,
   };
 
   constructor() {}
@@ -72,6 +71,9 @@ export class UserCheckbox
     this._switchArgs.switchOrCheckbox =
       context.parameters.switchorcheckbox?.raw ?? 'Switch';
     this._switchArgs.theme = context.parameters.Theme?.raw ?? 'WebLightTheme';
+
+    console.log('Disabled: ', context.mode.isControlDisabled);
+    this._switchArgs.disabled = context.mode.isControlDisabled;
 
     this._root.render(createElement(UserCheckboxApp, this._switchArgs));
   }
