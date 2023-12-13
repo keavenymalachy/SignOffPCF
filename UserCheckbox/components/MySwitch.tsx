@@ -17,41 +17,47 @@ import {
 import { FluentProvider } from '@fluentui/react-components';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { IInputs } from '../generated/ManifestTypes';
-import useWebApiFetch, { UserData } from '../hooks/useWebApiFetch';
 import { getTheme } from '../utils/theme';
+import { useSwitchContext } from '../services/SwitchContextProvider';
+import { useUserData } from '../hooks/useUserData';
+import { UserData } from '../types/UserData';
 
-export interface MySwitchProps {
-  textFieldSLOT: string | null;
-  dateFormat: string;
-  showTime: boolean;
-  switchOrCheckbox: string;
-  theme:
-    | 'WebLightTheme'
-    | 'WebDarkTheme'
-    | 'TeamsLightTheme'
-    | 'TeamsDarkTheme'
-    | 'TeamsHighContrastTheme';
-  context: ComponentFramework.Context<IInputs> | null;
-  onSwitchChange: (input: string | null) => void;
-}
+// export interface MySwitchProps {
+//   textFieldSLOT: string | null;
+//   dateFormat: string;
+//   showTime: boolean;
+//   switchOrCheckbox: string;
+//   theme:
+//     | 'WebLightTheme'
+//     | 'WebDarkTheme'
+//     | 'TeamsLightTheme'
+//     | 'TeamsDarkTheme'
+//     | 'TeamsHighContrastTheme';
+//   context: ComponentFramework.Context<IInputs> | null;
+//   onSwitchChange: (input: string | null) => void;
+// }
 
 const useStyles = makeStyles({});
 
-const MySwitch = ({
-  textFieldSLOT,
-  dateFormat,
-  showTime,
-  switchOrCheckbox,
-  theme,
-  context,
-  onSwitchChange,
-}: MySwitchProps) => {
+const MySwitch = (): React.JSX.Element => {
+  const {
+    textFieldSLOT,
+    dateFormat,
+    showTime,
+    switchOrCheckbox,
+    theme,
+    context,
+    onSwitchChange,
+    disabled,
+  } = useSwitchContext();
+
   console.log('Showtime: ', showTime);
 
   const currentTheme = getTheme(theme);
 
-  const { data, error, isLoading } = useWebApiFetch(context!);
+  // const { data, error, isLoading } = useWebApiFetch(context!);
+
+  const { user, isLoading, error } = useUserData();
 
   const [loggedInUser, setLoggedInUser] = useState<UserData>({
     fullName: '',
@@ -70,9 +76,9 @@ const MySwitch = ({
   }, []);
 
   useEffect(() => {
-    setLoggedInUser(data);
-    console.log('data', data);
-  }, [data]);
+    setLoggedInUser(user as UserData);
+    console.log('data: ', user);
+  }, [user]);
 
   const onChange = (): void => {
     // let switchChecked: boolean = !!checked;
@@ -109,6 +115,24 @@ const MySwitch = ({
     });
   };
 
+  const renderSecondaryText = (): string => {
+    let formattedTimestamp: string = '';
+
+    if (switchData && switchData.timestamp) {
+      if (dateFormat === 'UK') {
+        formattedTimestamp = `${switchData.timestamp.split('/')[0]}/${
+          switchData?.timestamp.split('/')[1]
+        }/${switchData?.timestamp.split('/')[2]}`;
+      } else {
+        formattedTimestamp = `${switchData.timestamp.split('/')[1]}/${
+          switchData?.timestamp.split('/')[0]
+        }/${switchData?.timestamp.split('/')[2]}`;
+      }
+    }
+
+    return showTime ? formattedTimestamp : formattedTimestamp.split('@')[0];
+  };
+
   return (
     <FluentProvider theme={currentTheme}>
       <div
@@ -120,9 +144,17 @@ const MySwitch = ({
         }}
       >
         {switchOrCheckbox === 'Switch' ? (
-          <Switch checked={switchData !== null} onChange={onChange} />
+          <Switch
+            checked={switchData !== null}
+            onChange={onChange}
+            disabled={disabled}
+          />
         ) : (
-          <Checkbox checked={switchData !== null} onChange={onChange} />
+          <Checkbox
+            checked={switchData !== null}
+            onChange={onChange}
+            disabled={disabled}
+          />
         )}
         {switchData && (
           <>
@@ -130,11 +162,7 @@ const MySwitch = ({
               <InteractionTagPrimary
                 onClick={handleNameClick}
                 media={<Avatar name={switchData.fullName} color='colorful' />}
-                secondaryText={
-                  showTime
-                    ? switchData.timestamp
-                    : switchData.timestamp?.split('@')[0]
-                }
+                secondaryText={renderSecondaryText()}
               >
                 {switchData.fullName}
               </InteractionTagPrimary>

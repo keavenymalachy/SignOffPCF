@@ -1,7 +1,8 @@
 import { IInputs, IOutputs } from './generated/ManifestTypes';
 import { createElement } from 'react';
 import { createRoot, Root } from 'react-dom/client';
-import MyCheckbox, { MySwitchProps } from './components/MySwitch';
+import SwitchArgs from './services/SwitchContext';
+import UserCheckboxApp from './components/UserCheckboxApp';
 
 export class UserCheckbox
   implements ComponentFramework.StandardControl<IInputs, IOutputs>
@@ -9,15 +10,17 @@ export class UserCheckbox
   private _notifyOutputChanged: () => void;
   private _root: Root;
   private _inputText: string | null;
+  private _isDesignMode: boolean;
 
-  private _props: MySwitchProps = {
+  private _switchArgs: SwitchArgs = {
     textFieldSLOT: null,
-    dateFormat: 'UK',
-    showTime: true,
+    dateFormat: '',
+    showTime: false,
     switchOrCheckbox: '',
-    context: null,
     theme: 'WebLightTheme',
+    context: {} as ComponentFramework.Context<IInputs>,
     onSwitchChange: this.notifyChange.bind(this),
+    disabled: false,
   };
 
   constructor() {}
@@ -38,7 +41,17 @@ export class UserCheckbox
   ): void {
     this._root = createRoot(container!);
     this._notifyOutputChanged = notifyOutputChanged;
-    this._props.context = context;
+    console.log('inits', context);
+    console.log('context', this._switchArgs.context);
+    this._switchArgs.context = context;
+
+    //https://butenko.pro/2023/01/08/pcf-design-time-vs-run-time/
+    if (
+      location.ancestorOrigins?.[0] === 'https://make.powerapps.com' ||
+      location.ancestorOrigins?.[0] === 'https://make.preview.powerapps.com'
+    ) {
+      this._isDesignMode = true;
+    }
   }
 
   /**
@@ -47,18 +60,22 @@ export class UserCheckbox
    */
   public updateView(context: ComponentFramework.Context<IInputs>): void {
     context.parameters.textField.raw === null
-      ? (this._props.textFieldSLOT = null)
-      : (this._props.textFieldSLOT = context.parameters.textField.raw!);
+      ? (this._switchArgs.textFieldSLOT = null)
+      : (this._switchArgs.textFieldSLOT = context.parameters.textField.raw!);
 
     // Static Properties
-    this._props.dateFormat = context.parameters.dateformat?.raw ?? 'UK';
-    this._props.showTime = context.parameters.showtime?.raw === 'True' ?? true;
+    this._switchArgs.dateFormat = context.parameters.dateformat?.raw ?? 'UK';
+    this._switchArgs.showTime =
+      context.parameters.showtime?.raw === 'True' ?? true;
 
-    this._props.switchOrCheckbox =
+    this._switchArgs.switchOrCheckbox =
       context.parameters.switchorcheckbox?.raw ?? 'Switch';
-    this._props.theme = context.parameters.Theme?.raw ?? 'WebLightTheme';
+    this._switchArgs.theme = context.parameters.Theme?.raw ?? 'WebLightTheme';
 
-    this._root.render(createElement(MyCheckbox, this._props));
+    console.log('Disabled: ', context.mode.isControlDisabled);
+    this._switchArgs.disabled = context.mode.isControlDisabled;
+
+    this._root.render(createElement(UserCheckboxApp, this._switchArgs));
   }
 
   /**
