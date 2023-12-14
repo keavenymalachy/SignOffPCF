@@ -158,10 +158,16 @@ const MySwitch = (): React.JSX.Element => {
         )}
         {switchData && (
           <>
-            <InteractionTag shape='circular'>
+            <InteractionTag shape='circular' disabled={disabled}>
               <InteractionTagPrimary
                 onClick={handleNameClick}
-                media={<Avatar name={switchData.fullName} color='colorful' />}
+                media={
+                  <Avatar
+                    name={switchData.fullName}
+                    color='colorful'
+                    image={{ src: switchData.img }}
+                  />
+                }
                 secondaryText={renderSecondaryText()}
               >
                 {switchData.fullName}
