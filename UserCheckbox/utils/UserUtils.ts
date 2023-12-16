@@ -7,6 +7,8 @@ export const getUserData = async (
 ): Promise<UserData> => {
   const userId = context.userSettings.userId.replace(/[{}]/g, '');
 
+  console.log(`userId: ${userId}`);
+
   const result = await context.webAPI.retrieveRecord(
     'systemuser',
     userId,

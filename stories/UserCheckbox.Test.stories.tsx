@@ -25,9 +25,6 @@ export default {
       <div style={{ margin: '3em', maxWidth: '350px' }}>{Story()}</div>
     ),
   ],
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
   args: {
     textFieldSLOT:
       '{"fullName":"Malachy Keaveny","img":"","userId":"{596C4CB1-03AF-ED11-9885-000D3AB1252D}","timestamp":"13/12/2023 @ 22:20"}',
@@ -126,12 +123,20 @@ function mockContext(): ComponentFramework.Context<IInputs> {
     secured: false,
   };
 
-  mockGenerator.context.userSettings.userName = 'Malachy Keaveny';
+  mockGenerator.context.userSettings.userName = 'Joe Bloggs';
   mockGenerator.context.userSettings.userId =
     '{596C4CB1-03AF-ED11-9885-000D3AB1252D}';
 
   mockGenerator.context.parameters.textField.raw =
     '{"fullName":"Paddy Pimplett","img":"","userId":"{596C4CB1-03AF-ED11-9885-000D3AB1252D}","timestamp":"13/12/2023 @ 22:20"}';
+
+  mockGenerator.context.webAPI.retrieveRecord.callsFake(
+    (entityType: string, id: string, options?: string) => {
+      return Promise.resolve({
+        entityimage_url: '',
+      });
+    }
+  );
 
   mockGenerator.ExecuteInit();
 
