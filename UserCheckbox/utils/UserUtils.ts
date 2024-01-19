@@ -7,6 +7,8 @@ export const getUserData = async (
 ): Promise<UserData> => {
   const userId = context.userSettings.userId.replace(/[{}]/g, '');
 
+  console.log(`userId: ${userId}`);
+
   const result = await context.webAPI.retrieveRecord(
     'systemuser',
     userId,
@@ -15,6 +17,8 @@ export const getUserData = async (
 
   let userName: string = context.userSettings.userName;
   let userImg: string;
+
+  console.log(`Username: ${userName} and UserId: ${userId}`);
 
   if (result.entityimage_url == null) {
     userImg = '';

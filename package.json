@@ -20,6 +20,7 @@
   },
   "devDependencies": {
     "@microsoft/eslint-plugin-power-apps": "^0.2.6",
+    "@shko.online/componentframework-mock": "^0.2.0",
     "@storybook/addon-essentials": "^7.6.4",
     "@storybook/addon-interactions": "^7.6.4",
     "@storybook/addon-links": "^7.6.4",
