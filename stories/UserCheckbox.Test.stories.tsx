@@ -10,14 +10,10 @@ import {
   StringPropertyMock,
 } from "@shko.online/componentframework-mock";
 import { IInputs, IOutputs } from "../UserCheckbox/generated/ManifestTypes";
-import { render } from "react-dom";
-import { text } from "stream/consumers";
-import { mock } from "node:test";
-import SwitchArgs from "../UserCheckbox/services/SwitchContext";
 import { UserCheckbox } from "../UserCheckbox";
 
 export default {
-  title: "UserCheckbox/Test",
+  title: "UserSignOff/Components",
   tags: ["autodocs"],
   component: UserCheckboxApp,
   decorators: [
