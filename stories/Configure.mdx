@@ -5,7 +5,9 @@ import Default from "./assets/pcf_unticked.png";
 import Ticked from "./assets/pcf_ticked.png";
 import TickedWithImg from "./assets/pcf_with_img.png";
 
-import { checkboxClassNames } from "@fluentui/react-components";
+import { Checkbox, checkboxClassNames } from "@fluentui/react-components";
+import { format } from "path";
+import { notDeepEqual } from "assert";
 export const RightArrow = () => (
   <svg
     viewBox='0 0 14 14'
@@ -73,42 +75,49 @@ export const RightArrow = () => (
     <tr>
         <td>textFieldSLOT</td>
         <td>string</td>
-        <td>x</td>
+        <td>Input field, single line of text</td>
     </tr>
     <tr>
         <td>dateFormat</td>
         <td>string</td>
-        <td>x</td>
+        <td>Display date timestamp in UK or US format, using 'UK' or 'US'</td>
     </tr>
     <tr>
         <td>showTime</td>
         <td>boolean</td>
-        <td>x</td>
+        <td>Choose to display time or not.</td>
     </tr>
     <tr>
         <td>switchOrCheckbox</td>
         <td>string</td>
-        <td>x</td>
+        <td>Use a Switch or Checkbox Component, using 'Switch' or 'Checkbox'</td>
     </tr>
     <tr>
         <td>theme</td>
         <td>string</td>
-        <td>x</td>
+        <td>
+        Shoutout to David Rivard for this, check out his article below: 
+          <a href="https://itmustbecode.com/develop-pcf-controls-with-fluentui-react-v9/" target="_blank">
+            <div  style={{color:"blue"}}>
+            Develop PCF Controls with FluentUI React v9
+            </div>
+          </a>
+</td>
     </tr>
     <tr>
         <td>context</td>
         <td>ComponentFramework.Context&lt;IInputs&gt;</td>
-        <td>x</td>
+        <td>Powerapps Component Framework context</td>
     </tr>
     <tr>
         <td>onSwitchChange</td>
-        <td>(input: string OR null) =&gt; void</td>
-        <td>x</td>
+        <td>(input: string OR null) =&gt;</td>
+        <td>Callback function to control</td>
     </tr>
     <tr>
         <td>disabled</td>
         <td>boolean</td>
-        <td>x</td>
+        <td>Whether the control should be disabled or not.</td>
     </tr>
 </table>
   </div>
@@ -132,17 +141,6 @@ export const RightArrow = () => (
         href="https://github.com/storybookjs/storybook"
         target="_blank"
       >Github<RightArrow /></a>
-    </div>
-    <div className="sb-section-item">
-      <img src={Github} alt="Discord logo" className="sb-explore-image"/>
-      <div>
-        Get support and chat with frontend developers.
-
-        <a
-          href="https://discord.gg/storybook"
-          target="_blank"
-        >Join Discord server<RightArrow /></a>
-      </div>
     </div>
 
 </div>
