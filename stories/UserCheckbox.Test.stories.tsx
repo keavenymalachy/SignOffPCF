@@ -14,7 +14,6 @@ import { UserCheckbox } from "../UserCheckbox";
 
 export default {
   title: "UserSignOff/Components",
-  tags: ["autodocs"],
   component: UserCheckboxApp,
   decorators: [
     (Story) => (
